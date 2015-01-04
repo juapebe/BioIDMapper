@@ -6,6 +6,7 @@ from mapping import *
 from processfile import *
 
 if __name__=="__main__":
+	print "Usage: python bioidmapper.py <peptides.txt file>"
 	if len(sys.argv)==1:
 		print "Input file is missing. \n usage: python bioidmapper.py <peptides.txt file>"
 		sys.exit()
@@ -16,7 +17,7 @@ if __name__=="__main__":
  		print "The input file doesn't seem to be a valid peptides.txt file.\nPlease check it contains the required fields." 
  		sys.exit()
 
-	print "***Creating protein records (downloading full sequence and PDB codes).***"
+	print "***Creating protein records (connecting to Uniprot to download sequence and PDB codes).***"
 	proteins=fillproteins(peptides)
 
 	print "%i peptide records parsed."%len(peptides)

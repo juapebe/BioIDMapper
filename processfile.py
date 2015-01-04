@@ -36,16 +36,16 @@ def fillproteins(pepts):
 	#First,creates a list of the proteins present.
 	#It is a dictionary of includes the list of peptide features for every protein.
 	for pep in pepts:
-		if pep.unique==False or pep.intensity=="0":
+		if pep.unique==False or pep.intensity=="0": #Discards the peptide if the intensity is 0 or if the peptide is not unique to protein.
 			continue
 		if pep.uniprot not in protIDs:
 			protIDs[pep.uniprot]=[pep]
 		else:
 			protIDs[pep.uniprot].append(pep)
 
-	#Then, creates protein objects. The peptide attribute is a list of tuples (seq. peptide object, intensity)
+	#Then, creates protein objects. The features attribute is a list of peptide objects
 	for c, protein in enumerate(protIDs):
-		if len(protIDs[protein])<2:
+		if len(protIDs[protein])<2: #Discards protein with less than 2 unique peptides
 			continue
 		p=Protein(id=protein, features=protIDs[protein])
 		p.getprotinfo()
@@ -61,15 +61,17 @@ def processfile(f):
 	fil=open(f)
 	peptides=set()
 	print "***Parsing input file. Creating peptide records.***"
-	for line in fil:
+	for c, line in enumerate(fil):
 		if len(peptides)==0:
 			ind=get_indexes(line)
 			#Checks input file is valid
 			reqfields=["Sequence", "Leading razor protein", "Intensity", "Unique (Proteins)", "id"]
 			if not all(x in ind for x in reqfields):
 				return False
-
 		peptides.add(readpept(line, ind))
+		# if c>25:
+		# 	break
+
 	fil.close()
 	return peptides
 

@@ -27,12 +27,11 @@ class Peptide(SeqFeature.SeqFeature):
 
 class Protein(SeqRecord.SeqRecord):
 	#A class that represents the proteins. the 'id' attribute is used to store the UniProt ID.
-	#Most important attribute is .features, here a dictionary, which contain peptide feature objects
 	def __init__(self, seq=Bio.Seq.Seq("", alphabet="IUPAC.Protein"), id="UniProtNotSet", 
 		PDB=None, features=[], description="Description"):
 		Bio.SeqRecord.SeqRecord.__init__(self, seq=seq)
 		self.id=id
-		self.features=features
+		self.features=features 	#Most important attribute is .features, here a list that contains the peptide objects.
 		self.PDB=PDB
 		self.description=description
 
@@ -43,7 +42,7 @@ class Protein(SeqRecord.SeqRecord):
 		return "Protein %s (%s) with %s unique peptides identified. Sequence and intensities are:\n"%(self.id, self.description, len(l)) + "\n".join(l)
 
 	def getprotinfo(self):
-		#Uses UniprotID to retrieve the sequence and the PDB entry(es) for the protein.
+		#Uses UniprotID to retrieve the sequence, entry name andd the PDB code(s) for the protein.
 		try:
 			handle=ExPASy.get_sprot_raw(self.id)
 			record = SwissProt.read(handle)
@@ -53,7 +52,7 @@ class Protein(SeqRecord.SeqRecord):
 				if r[0]=="PDB":
 					if self.PDB==None:
 						self.PDB=[]
-					self.PDB.append(r[1])
+					self.PDB.append((r[1], r[-1]))
 		except:
 			print "Could not retrieve sequence, PDB info for: " + self.id
 			self.seq="NOTRETRIEVED"
